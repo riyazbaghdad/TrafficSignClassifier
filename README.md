@@ -201,7 +201,7 @@ The top five soft max probabilities were;
 |     .0874   | End of no passing   |
 |     .0668   | Dangerous curve to the right |
 
-For the second image, the model is relatively sure that this is a  'No passing' (probability of 1.00), and the image does not contain a 'No passing'. 
+For the third image, the model is relatively sure that this is a  'No passing' (probability of 1.00), and the image does not contain a 'No passing'. 
 
 **Fourth Image : Yield**
 
@@ -233,11 +233,4 @@ The top five soft max probabilities were;
 |     .0000   | Vehicles over 3.5 metric tons prohibited   |
 |     .0000   | No vehicles |
 
-For the Fourth image, the model is relatively sure that this is a  'No Passing' (probability of 1.00), and the image does contain a 'No Passing'. 
-
-### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
-#### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
-
-
-
-
+For the Fifth image, the model is relatively sure that this is a  'No Passing' (probability of 1.00), and the image does contain a 'No Passing'. 

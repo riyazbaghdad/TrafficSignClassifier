@@ -15,13 +15,14 @@ The goals / steps of this project are the following:
 
 [image1]: ./output_images/training_images_graph.png "Visualization"
 [image1.1]: ./output_images/augmented_training_images_graph.png "Visualization Augmented"
-[image2]: ./examples/grayscale.jpg "Grayscaling"
-[image3]: ./examples/random_noise.jpg "Random Noise"
-[image4]: ./examples/placeholder.png "Traffic Sign 1"
-[image5]: ./examples/placeholder.png "Traffic Sign 2"
-[image6]: ./examples/placeholder.png "Traffic Sign 3"
-[image7]: ./examples/placeholder.png "Traffic Sign 4"
-[image8]: ./examples/placeholder.png "Traffic Sign 5"
+
+[image2]: output_images/0_resized.jpg "Grayscaling"
+[image3]: output_images/1_resized.jpg "Random Noise"
+[image4]: output_images/3_resized.jpg "Traffic Sign 1"
+[image5]: output_images/4_resized.jpg "Traffic Sign 2"
+[image6]: output_images/5_resized.jpg "Traffic Sign 3"
+[image7]: output_images/yield_grey_resized.png "Traffic Sign 4"
+[image8]: output_images/yield_grey_warped.png "Traffic Sign 5"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -52,31 +53,38 @@ Here is an exploratory visualization of the data set. It is a bar chart showing 
 
 ![alt text][image1]
 
-After Augmentation of training data, the following chart depicts the numbers
-
-
-![alt text][image1.1]
 
 ### Design and Test a Model Architecture
 
-#### 1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
+#### 1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)##
 
-As a first step, I decided to convert the images to grayscale because of the computation cost factor involved when working on color RGB images, plus in this task the color has little significance.
+- convert the images to grayscale because of the computation cost factor involved when working on color RGB images, plus in this task the color has little significance.
 
-Then I normalized the images into [0,1] range instead of [0,255]. Both the steps resulted in an increase with final test accuracy.
+- Saturating the intensity values at 1 and 99 percentile.
+Min/max normalization to the [0, 1] range.
+- Subtraction of its mean from the image, making the values centered around 0 and in the [-1, 1] range.
+  
+The percentile-based method gave an additional (approx.) 1% improvement over simple min/max normalization (this method was mentioned in the paper(Ciresan (2012): Multi-Column Deep Neural Network for Traffic Sign Classification)).
 
-I considered the LeNet Network as my model classifier. I had to tweak the input dimensions to 32x32x1 as the input shape. 
+I considered the LeNet Network as my model classifier. I had to tweak the input dimensions to 32x32x1 as the input shape and increase the number of output feature maps as it improved my model accuracies. 
 
 After several iterative approach, I felt that Dropout totally increased the robustness of the network thereby resulting in an increase with accuracy. Also by viewing the graph above of the training images, I decided to augment them to result in an increase of accuracy and robustness. 
 
+Augmentation:
+  - I tried several augmentation techniques like Rotation, Noise and Affine tranformation. After comparing the final training results, I had to stick with "Affine Transformation" as the augmentation resulted in an improvement.
+
 Here is an example of a traffic sign image before and after grayscaling.
 
-![alt text][image2]
+![alt text][image3] ![alt text][image7]
 
 Here is an example of an original image and an augmented image:
 
-![alt text][image3]
+![alt text][image3] ![alt text][image8]
 
+After Augmentation of training data, the size of augmented set is **69,598 images** 
+- The following chart depicts the number of images per class;
+
+![alt text][image1.1]
 
 #### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
@@ -111,8 +119,6 @@ Batch size     - 128
 No. of Epochs  - 20 (After an iterative approach)
 Learning rate  - 0.01
 
-With the new augmented training data, I trained the network for 20 Epochs that resulted in a 2% increase to baseline accuracy which is now ~95% on test images.
-
 #### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
@@ -127,42 +133,109 @@ My final model results were:
 
 Here are five German traffic signs that I found on the web:
 
-![alt text][image4] ![alt text][image5] ![alt text][image6] 
-![alt text][image7] ![alt text][image8]
+![alt text][image2] ![alt text][image3] ![alt text][image4] 
+![alt text][image5] ![alt text][image6]
 
-The first image might be difficult to classify because ...
+I chose 5 images to test on my model. All the images were good quality, however I felt like Image 4(Yield), Image 5(No passing) had some artifacts in it.
 
 #### 2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
 Here are the results of the prediction:
 
-|     Image     |  Prediction   |
-| :-----------: | :-----------: |
-|   Stop Sign   |   Stop sign   |
-|    U-turn     |    U-turn     |
-|     Yield     |     Yield     |
-|   100 km/h    |  Bumpy Road   |
-| Slippery Road | Slippery Road |
+|        Image       |    Prediction    |
+| :----------------: | :--------------: |
+|  Stop Sign         |  Stop sign       |
+|  Right of way      |  Right of way    |
+|  Children crossing |  No passing      |
+|  Yield             |  Yield           |
+|  No passing        |  No passing      |
 
 
-The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
+The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ~95%.    
 
 #### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
 The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
 
-For the first image, the model is relatively sure that this is a stop sign (probability of 0.6), and the image does contain a stop sign. The top five soft max probabilities were
+**First Image : STOP sign**
+
+![alt text][image2]
+
+The top five soft max probabilities were;
 
 | Probability |  Prediction   |
 | :---------: | :-----------: |
-|     .60     |   Stop sign   |
-|     .20     |    U-turn     |
-|     .05     |     Yield     |
-|     .04     |  Bumpy Road   |
-|     .01     | Slippery Road |
+|     .9970   |   Stop sign   |
+|     .0010   |   Turn left ahead     |
+|     .0003     |     Speed limit (120km/h)     |
+|     .0003     | Speed limit (60km/h)   |
+|     .0003   | Speed limit (70km/h) |
 
+For the first image, the model is relatively sure that this is a 'stop sign'(probability of 0.99), and the image does contain a 'stop sign'. 
 
-For the second image ... 
+**Second Image : Right-of-way at the next intersection**
+
+![alt text][image3]
+
+The top five soft max probabilities were;
+
+| Probability |  Prediction   |
+| :---------: | :-----------: |
+|     1.0000   |   Right-of-way at the next intersection   |
+|     .0000   |   Beware of ice/snow     |
+|     .0000   |     Double curve     |
+|     .0000   | Children crossing   |
+|     .0000   | Slippery road |
+
+For the second image, the model is relatively sure that this is a 'Right-of-way at the next intersection (probability of 1.00)', and the image does contain a 'Right-of-way at the next intersection'. 
+
+**Third Image : Children Crossing**
+
+![alt text][image4]
+
+The top five soft max probabilities were;
+
+| Probability |  Prediction   |
+| :---------: | :-----------: |
+|     .4491   |   No passing   |
+|     .2401   |   Dangerous curve to the left     |
+|     .1047   |    No entry     |
+|     .0874   | End of no passing   |
+|     .0668   | Dangerous curve to the right |
+
+For the second image, the model is relatively sure that this is a  'No passing' (probability of 1.00), and the image does not contain a 'No passing'. 
+
+**Fourth Image : Yield**
+
+![alt text][image5]
+
+The top five soft max probabilities were;
+
+| Probability |  Prediction   |
+| :---------: | :-----------: |
+|     1.0000   |   Yield  |
+|     .0000   |   Priority road     |
+|     .0000  |    No passing for vehicles over 3.5 metric tons |
+|     .0000   | End of no passing   |
+|     .0000   | No vehicles |
+
+For the Fourth image, the model is relatively sure that this is a  'Yield' (probability of 1.00), and the image does contain a 'Yield'. 
+
+**Fifth Image : No Passing**
+
+![alt text][image6]
+
+The top five soft max probabilities were;
+    
+| Probability |  Prediction   |
+| :---------: | :-----------: |
+|     1.0000   |   No passing  |
+|     .0000   |   No passing for vehicles over 3.5 metric tons |
+|     .0000  |    No entry |
+|     .0000   | Vehicles over 3.5 metric tons prohibited   |
+|     .0000   | No vehicles |
+
+For the Fourth image, the model is relatively sure that this is a  'No Passing' (probability of 1.00), and the image does contain a 'No Passing'. 
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 #### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
